@@ -1,5 +1,8 @@
 //@Author Yuz
 
+#ifndef COCTX_H
+#define COCTX_H
+
 #include <stdlib.h>
 
 typedef void (*coctx_func)(void *arg);
@@ -14,3 +17,4 @@ struct ucontext
 int coctx_init(ucontext *ctx);
 void coctx_make(ucontext *ctx, coctx_func fun,void * s1, void * s2);
 
+#endif
