@@ -62,8 +62,13 @@ int coroutine_new(schedule*S,coroutine_func fun,void *tud)
 int coroutine_status(schedule *S, int id)
 {
     assert(id >= 0 && id < S->cap);
-    if(S->co[id] == NULL){
-        return COROUTINE_DEAD;
+    if(S->co[id] == NULL) return COROUTINE_DEAD;
+
+    if(S->co[id]->status == COROUTINE_DEAD){
+	uzcoroutine*C = S->co[id];
+	delete C;
+	S->co[id] = NULL;
+	return COROUTINE_DEAD;
     }
     return S->co[id]->status;
 }
@@ -121,7 +126,7 @@ void co_main_yield(schedule*S)
     int id = S->running;
     assert(id>=0);
     uzcoroutine*co = S->co[id];
-    co->status = COROUTINE_READ;
+    co->status = COROUTINE_DEAD;
     S->running = -1;
     co_swap(&co->ctx,&S->main);
 }
